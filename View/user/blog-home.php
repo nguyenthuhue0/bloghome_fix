@@ -10,10 +10,15 @@ $db = database::getDB();
 $article = new Article($db);
 $userInfo = new UserInfo($db);
 
-$articles = $article->loadAllArticleAd();
+$totalArticles = $article->countAllArticleAd();
+$totalPages = ceil($totalArticles / 9);
+
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+$articles = $article->loadAllArticleAd($page);
 
 if (isset($_GET['article'])) {
-    $articles = $article->getArticleByTitle($_GET['article']);
+    $articles = $article->getArticleByTitle($_GET['article'], $page);
 }
 ?>
 
@@ -83,14 +88,28 @@ if (isset($_GET['article'])) {
             <div class="col-lg-12 p-2">
                 <div class="row">
                     <?php foreach ($articles as $row): ?>
-                        <div class="col-12 col-md-6 col-lg-3">
-                            <div class="card mb-4">
-                                <a href="#!"><img class="card-img-top" src="<?php echo $row['img']; ?>" alt="..."></a>
-                                <div class="card-body">
-                                    <div class="small text-muted"><?php echo $row['datePosted']; ?></div>
-                                    <h2 class="card-title h4"><?php echo $row['title']; ?></h2>
-                                    <p class="card-text"><?php echo $row['content']; ?></p>
-                                    <a class="btn btn-primary" href="#!">Read more →</a>
+                        <div class="col-lg-4 mb-5">
+                            <div class="card h-100 shadow border-0">
+                                <img class="card-img-top" src="<?php echo $row['img']?>" alt="...">
+                                <div class="card-body p-4">
+                                    <div class="badge bg-primary bg-gradient rounded-pill mb-2">News</div>
+                                    <a class="text-decoration-none link-dark stretched-link" href="http://localhost:3000/fixdacs2/View/user/article-view.php?id=<?php echo $row['articleId'] ?>">
+                                        <h5 class="card-title mb-3">
+                                            <?php echo $row['title']?></h5>
+                                    </a>
+                                    <p class="card-text mb-0"><?php echo $row['content'] ?></p>
+                                </div>
+                                <div class="card-footer p-4 pt-0 bg-transparent border-top-0">
+                                    <div class="d-flex align-items-end justify-content-between">
+                                        <div class="d-flex align-items-center">
+                                            <img class="rounded-circle me-3" src="https://dummyimage.com/40x40/ced4da/6c757d" alt="...">
+                                            <div class="small">
+                                                <div class="fw-bold">
+                                                </div>
+                                                <div class="text-muted"><?php echo $row['datePosted']?></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -100,14 +119,13 @@ if (isset($_GET['article'])) {
                 <nav aria-label="Pagination">
                     <hr class="my-0"/>
                     <ul class="pagination justify-content-center my-4">
-                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">Newer</a>
-                        </li>
-                        <li class="page-item active" aria-current="page"><a class="page-link" href="#!">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">3</a></li>
-                        <li class="page-item disabled"><a class="page-link" href="#!">...</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">15</a></li>
-                        <li class="page-item"><a class="page-link" href="#!">Older</a></li>
+                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                            <?php if($page == $i): ?>
+                                <li class="page-item active" aria-current="page"><a class="page-link" href=""><?php echo $i ?></a></li>
+                            <?php else: ?>
+                                <li class="page-item"><a class="page-link" href="http://localhost:3000/fixdacs2/View/user/blog-home.php?page=<?php echo $i ?>"><?php echo $i ?></a></li>
+                            <?php endif; ?>
+                        <?php endfor ?>
                     </ul>
                 </nav>
             </div>
