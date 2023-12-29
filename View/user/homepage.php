@@ -10,7 +10,7 @@ $db = database::getDB();
 $article = new Article($db);
 $userInfo = new UserInfo($db);
 
-$articles = $article->loadAllArticleAd();
+$articles = $article->loadAllArticleAd(1);
 ?>
 
 <!DOCTYPE html>

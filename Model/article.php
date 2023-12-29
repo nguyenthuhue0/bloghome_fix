@@ -230,11 +230,7 @@ class Article {
 
     public function getArticleByTitle($title, $pageNumber) {
         try {
-            $sql = "SELECT * 
-                    FROM article 
-                    WHERE title LIKE '%$title%' 
-                    ORDER BY datePosted DESC 
-                    LIMIT 9 OFFSET ($pageNumber-1)*9;";
+            $sql = "SELECT * FROM article WHERE title LIKE '%" . $title . "%' ORDER BY datePosted DESC LIMIT 9 OFFSET " . (($pageNumber - 1) * 9);
             $stmt = $this->db->prepare($sql);
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
